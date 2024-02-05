@@ -4,7 +4,7 @@ import os
 import glob
 from dotenv import load_dotenv
 
-load_dotenv('/Users/samchernov/Desktop/Personal/Financials/newFinancialApp2024/newPFIApp/venv/secrets.env')
+load_dotenv('PATH_TO_ENV')
 
 
 def load_csv_to_df(main_path:str,fType:str) -> pd.DataFrame: 
