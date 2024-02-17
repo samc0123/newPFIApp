@@ -3,6 +3,8 @@ import numpy as np
 import os
 import glob
 from dotenv import load_dotenv
+from shared_code.my_sql_utils import *
+
 
 load_dotenv('PATH_TO_ENV')
 
@@ -59,8 +61,15 @@ def load_csv_to_df(main_path:str,fType:str) -> pd.DataFrame:
 
     # Concat & format frame to return
     transaction_frame = pd.concat(objs=li,axis=0,ignore_index=True)
+
     # Replace commas in thousands #'s
     transaction_frame['amount'] = transaction_frame['amount'].replace(',','',regex=True)
+
+    # Sort values 
+    transaction_frame.sort_values(by='datePosted',ascending=False)
+    
+    # Add placeholder for categories 
+    transaction_frame['category'] = pd.Series(dtype='string')
     return(transaction_frame)
 
 def process_transaction_csv() -> pd.DataFrame:
@@ -68,5 +77,18 @@ def process_transaction_csv() -> pd.DataFrame:
     main_df = load_csv_to_df(main_path=os.environ.get("TRANSACTION_PATH"),fType='.csv')
 
     return main_df
+
+def update_list_merchants(u_name:str,pw:str,host_name:str,db_name:str) -> str:
+    '''Update the merchants table to include any new ones'''
+
+    # Get current list of merchants 
+    query = "SELECT merchant_name from merchants"
+    cur_list_merchants = query_my_sql(u_name=u_name,pw=pw,host_name=host_name,db_name=db_name,query=query)
+
+    # Print list of merchants 
+    print(cur_list_merchants)
+
+    return 'Sucess'
+
 
 
